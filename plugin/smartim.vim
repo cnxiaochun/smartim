@@ -55,7 +55,6 @@ call Smartim_start_debug()
 
 function! Smartim_GetInputMethodHandler(channel, msg)
   silent let b:saved_im = a:msg
-  silent call system(s:imselect_path . ' ' .g:smartim_default)
   call Smartim_debug_print('b:saved_im = ' . b:saved_im)
   call Smartim_debug_print('<<< Smartim_SelectDefault returned ' . v:shell_error)
 endfunction
@@ -68,10 +67,9 @@ function! Smartim_SelectDefault()
   endif
 
   if has('job')
-    call job_start([s:imselect_path], {'callback': 'Smartim_GetInputMethodHandler'})
+    call job_start([s:imselect_path, g:smartim_default], {'callback': 'Smartim_GetInputMethodHandler'})
   else
-    silent let b:saved_im = system(s:imselect_path)
-    silent call system(s:imselect_path . ' ' . g:smartim_default)
+    silent let b:saved_im = system(s:imselect_path . ' ' . g:smartim_default)
     call Smartim_debug_print('b:saved_im = ' . b:saved_im)
     call Smartim_debug_print('<<< Smartim_SelectDefault returned ' . v:shell_error)
   endif
